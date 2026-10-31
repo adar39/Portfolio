@@ -600,11 +600,83 @@ ul {
   justify-content: center;
 }
 
-/* Sun/Moon icon visibility based on theme */
-:root[data-theme="dark"] .icon-sun { display: block; }
-:root[data-theme="dark"] .icon-moon { display: none; }
-:root[data-theme="light"] .icon-sun { display: none; }
-:root[data-theme="light"] .icon-moon { display: block; }
+/* ============================================
+   LIGHTBULB THEME TOGGLE
+   The bulb glows when light mode is ON (light theme),
+   and stays dim when OFF (dark theme).
+   ============================================ */
+.icon-bulb {
+  flex-shrink: 0;
+  transition: transform var(--transition);
+}
+
+/* Rays — hidden when light is OFF (dark), shown when ON (light) */
+.bulb-rays {
+  opacity: 0;
+  transform-origin: 12px 12px;
+  transition: opacity var(--transition);
+}
+
+:root[data-theme="light"] .bulb-rays {
+  opacity: 1;
+}
+
+/* Bulb glass — OFF = dim outline, ON = glowing cyan fill */
+.bulb-glass {
+  transition: fill var(--transition), stroke var(--transition), filter var(--transition);
+}
+
+:root[data-theme="dark"] .bulb-glass {
+  fill: transparent;
+  stroke: var(--fg-muted);
+}
+
+:root[data-theme="light"] .bulb-glass {
+  fill: var(--accent);
+  fill-opacity: 0.3;
+  stroke: var(--accent);
+  filter: drop-shadow(0 0 4px var(--accent-glow));
+  animation: bulb-glow-pulse 3s ease-in-out infinite;
+}
+
+/* Filament — dim when OFF, bright cyan when ON */
+.bulb-filament {
+  transition: stroke var(--transition), filter var(--transition), stroke-width var(--transition);
+}
+
+:root[data-theme="dark"] .bulb-filament {
+  stroke: var(--fg-muted);
+}
+
+:root[data-theme="light"] .bulb-filament {
+  stroke: var(--accent);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 3px var(--accent-glow));
+}
+
+/* When light is ON, the whole toggle button gets a subtle glow */
+:root[data-theme="light"] .theme-toggle {
+  color: var(--accent);
+  border-color: var(--border-hover);
+  background: var(--accent-soft);
+  box-shadow: 0 0 12px var(--accent-soft);
+}
+
+/* Hover preview: even when off, hovering brightens the outline to cyan */
+.theme-toggle:hover .bulb-glass,
+.theme-toggle:hover .bulb-filament {
+  stroke: var(--accent);
+}
+
+.theme-toggle:hover .icon-bulb {
+  transform: scale(1.08);
+}
+
+/* Subtle breathing glow when the light is on */
+@keyframes bulb-glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 3px var(--accent-glow)); }
+  50%      { filter: drop-shadow(0 0 7px var(--accent-glow)); }
+}
 
 .sidebar-copyright {
   font-size: 0.6875rem;
